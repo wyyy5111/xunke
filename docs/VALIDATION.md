@@ -47,6 +47,8 @@
 
 ## 发布状态
 
-本次已完成本地构建、页面检查、工作流语法检查与上传材料准备。尚未绑定远程仓库，尚未推送、执行 GitHub 托管工作流或获得公开网站链接。实际仓库创建并启用 Pages 后，应再核对在线工作流结果及公开地址。
+2026-09-28 已将源码发布至 [wyyy5111/xunke](https://github.com/wyyy5111/xunke)，启用 GitHub Pages，并设置仓库变量 `ENABLE_PAGES=true`。[线上发布工作流](https://github.com/wyyy5111/xunke/actions/runs/36369199049)的前后端检查、展示构建与部署均通过。
+
+公开地址为 [https://wyyy5111.github.io/xunke/](https://wyyy5111.github.io/xunke/)。已确认公开访问返回 HTTP 200，浏览器能加载登录页并使用教师演示账号进入工作台。该地址提供公开演示数据的只读浏览，完整服务仍按 README 在本地运行。
 
 Windows 安装包工作流作为原有手动构建能力保留；本次未重新执行 Windows 原生安装包验证。Pages 展示不依赖该工作流。
