@@ -1,0 +1,27 @@
+循课 XunkeFlow 1.1.0 独立桌面版
+
+本版本不需要 Docker、Node.js、Python 或 Java。
+
+Windows 10/11 x64：
+1. 双击 XunkeFlow_Windows_1.1.0_x64_Setup.exe。
+2. 完成安装后，从桌面或开始菜单打开“循课 XunkeFlow”。
+3. 如果 SmartScreen 提示未知发布者，请先核对 SHA256，再选择“更多信息 → 仍要运行”。
+
+macOS Apple Silicon：
+1. 打开 XunkeFlow_macOS_1.1.0_arm64.dmg。
+2. 将应用拖入 Applications。
+3. 若首次打开被阻止，在“系统设置 → 隐私与安全性”中选择“仍要打开”。
+
+macOS Intel：
+1. 打开 XunkeFlow_macOS_1.1.0_x64.dmg。
+2. 将应用拖入 Applications。
+3. 若首次打开被阻止，在“系统设置 → 隐私与安全性”中选择“仍要打开”。
+
+请勿混用两个 DMG：Apple 芯片选 arm64，Intel 处理器选 x64。首次启动请预留最多 120 秒完成完整运行时加载和演示数据库初始化。
+
+演示账号：
+管理员 admin / 123456
+教师 teacher / 123456
+学生 student01 / 123456
+
+默认使用明确标注的 Mock/本地课程引擎模式。真实模型密钥只能配置在安装后的用户数据目录 .env 中。

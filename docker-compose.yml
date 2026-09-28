@@ -1,0 +1,83 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      args:
+        PIP_INDEX_URL: ${PIP_INDEX_URL:-https://pypi.org/simple}
+    image: xunkeflow-backend:local
+    environment:
+      APP_ENV: ${APP_ENV:-dev}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      AUTO_SEED_DEMO: ${AUTO_SEED_DEMO:-true}
+      DATABASE_URL: sqlite:////app/data/xunkeflow.db
+      UPLOAD_DIR: /app/data/uploads
+      CHUNK_DIR: /app/data/chunks
+      JWT_SECRET: ${JWT_SECRET:-xunkeflow-local-only-change-before-production}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      JWT_EXPIRE_MINUTES: ${JWT_EXPIRE_MINUTES:-480}
+      JWT_ISSUER: ${JWT_ISSUER:-xunkeflow}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:-xunkeflow-web}
+      AUTH_LOGIN_MAX_FAILURES: ${AUTH_LOGIN_MAX_FAILURES:-5}
+      AUTH_LOGIN_WINDOW_SECONDS: ${AUTH_LOGIN_WINDOW_SECONDS:-300}
+      AUTH_REGISTER_MAX_REQUESTS: ${AUTH_REGISTER_MAX_REQUESTS:-10}
+      AUTH_REGISTER_WINDOW_SECONDS: ${AUTH_REGISTER_WINDOW_SECONDS:-3600}
+      VECTOR_STORE: sqlite_tfidf
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
+      # Preserve the backend's fail-fast model policy in Docker as well. A Pro
+      # value supplied through .env must reach Settings and be rejected rather
+      # than being silently masked by Compose.
+      LLM_MODEL: ${LLM_MODEL:-deepseek-v4-flash}
+      DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      LLM_TIMEOUT: ${LLM_TIMEOUT:-60}
+      LLM_MAX_RETRIES: ${LLM_MAX_RETRIES:-2}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.4}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
+      TRUSTED_HOSTS: ${TRUSTED_HOSTS:-localhost,127.0.0.1}
+    volumes:
+      - xunkeflow_data:/app/data
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=128m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    ports:
+      - "${BACKEND_BIND:-127.0.0.1}:${BACKEND_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+      start_period: 20s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmjs.org}
+    image: xunkeflow-frontend:local
+    depends_on:
+      backend:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=128m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    ports:
+      - "${FRONTEND_BIND:-127.0.0.1}:${FRONTEND_PORT:-5173}:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  xunkeflow_data:

@@ -1,0 +1,32 @@
+# Credentials and local configuration must never enter an image context.
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Local state and generated outputs.
+.git/
+.venv/
+venv/
+data/
+output/
+screenshots/
+tmp/
+.playwright-cli/
+*.db
+*.log
+__pycache__/
+*.py[cod]
+.pytest_cache/
+backend/app/tests/
+
+# Frontend dependency/build caches are rebuilt by its own Docker context.
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Non-runtime project materials are not needed by the backend image.
+docs/
+presentation/
+scripts/

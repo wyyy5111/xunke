@@ -1,0 +1,23 @@
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+ARG NPM_REGISTRY=https://registry.npmjs.org
+RUN npm ci --no-audit --no-fund --registry="${NPM_REGISTRY}"
+
+COPY index.html tsconfig.json vite.config.ts ./
+COPY src ./src
+RUN npm run build
+
+FROM nginx:1.27-alpine
+
+COPY nginx-main.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
+
+USER nginx
+
+EXPOSE 8080
+
+CMD ["nginx", "-g", "daemon off;"]

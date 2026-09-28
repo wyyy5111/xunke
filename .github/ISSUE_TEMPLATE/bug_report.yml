@@ -1,0 +1,26 @@
+name: 问题反馈
+description: 报告可复现的功能或展示问题
+body:
+  - type: dropdown
+    id: mode
+    attributes:
+      label: 运行方式
+      options:
+        - GitHub Pages 前端展示
+        - 本地完整服务
+        - Docker
+        - 桌面客户端
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤、预期结果和实际结果
+      description: 请写明角色和页面，不要填写密码、密钥或真实个人资料。
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境与截图
+      description: 操作系统、浏览器、相关日志或截图。
